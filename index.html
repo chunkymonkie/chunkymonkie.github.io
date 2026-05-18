@@ -1,1 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>yourhandle — Cybersecurity Student</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/home.css" />
+</head>
+<body>
 
+  <nav>
+    <a href="#hero" class="nav-logo">[andrxhh@kali]~$</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="scan-bg"></div>
+    <div class="hero-tag">student // cybersecurity</div>
+    <h1>Learning to <span>hack</span><br>one CTF at a time.</h1>
+    <p class="hero-sub">
+      I'm a cybersecurity student just getting started — documenting my CTF journey,
+      tools I'm exploring, and things I pick up along the way. Still early, but building in public.
+    </p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn-primary">My CTF Writeups</a>
+      <a href="#about" class="btn-secondary">About Me</a>
+    </div>
+    <div class="status-row">
+      <div class="status-chip"><div class="dot"></div>Active on HackTheBox</div>
+      <div class="status-chip"><div class="dot amber"></div>Currently learning: web exploitation</div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="section-label">// projects &amp; writeups</div>
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-icon">&#128027;</div>
+        <div class="card-title">CTF Writeups</div>
+        <div class="card-desc">
+          Documented solutions for HackTheBox and PicoCTF challenges across web, crypto, and forensics categories.
+        </div>
+        <div class="card-tags">
+          <span class="tag">htb</span>
+          <span class="tag">picoctf</span>
+          <span class="tag">writeup</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">&#128274;</div>
+        <div class="card-title">Recon Toolkit</div>
+        <div class="card-desc">
+          Small Python script for passive recon and footprinting — built while learning OSINT techniques.
+        </div>
+        <div class="card-tags">
+          <span class="tag">python</span>
+          <span class="tag">osint</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">&#128187;</div>
+        <div class="card-title">Homelab Setup</div>
+        <div class="card-desc">
+          Proxmox-based lab with intentionally vulnerable VMs (DVWA, VulnHub boxes) for hands-on practice.
+        </div>
+        <div class="card-tags">
+          <span class="tag">proxmox</span>
+          <span class="tag">linux</span>
+          <span class="tag">lab</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="section-label">// whoami</div>
+    <div class="about-grid">
+
+      <div>
+        <p class="about-text">
+          A cybersecurity student with a growing interest in web application security and network pentesting.
+          I document everything I learn here — CTF solutions, lab experiments, and notes from courses.
+          The goal is to get better every day and leave a paper trail of progress.
+        </p>
+        <div class="skills">
+          <span class="skill">Kali Linux</span>
+          <span class="skill">Burp Suite</span>
+          <span class="skill">Wireshark</span>
+          <span class="skill">Nmap</span>
+          <span class="skill">Python</span>
+          <span class="skill">Metasploit</span>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="t-bar">
+          <div class="t-dot"></div>
+          <div class="t-dot"></div>
+          <div class="t-dot"></div>
+        </div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">cat about.txt</span></div>
+        <div class="t-out">Name     : Your Name</div>
+        <div class="t-out">Role     : Cybersecurity Student</div>
+        <div class="t-out">Location : Singapore, SG</div>
+        <div class="t-out">Status   : <span class="t-available">learning</span></div>
+        <div class="t-out">HTB rank : Script Kiddie → Pro</div>
+        <div class="t-out">Goal     : break things safely</div>
+        <div><span class="t-prompt">$ </span><span class="t-cursor"></span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="section-label">// get in touch</div>
+    <p style="font-size:15px; color:var(--muted); max-width:480px; margin-bottom:28px;">
+      Always happy to connect with other learners, swap CTF tips, or just talk security.
+      Find me on any of the platforms below.
+    </p>
+    <div style="display:flex; flex-wrap:wrap; gap:12px;">
+      <a href="https://github.com/yourusername" target="_blank" class="btn-secondary">GitHub</a>
+      <a href="https://app.hackthebox.com/users/yourid" target="_blank" class="btn-secondary">HackTheBox</a>
+      <a href="https://linkedin.com/in/yourprofile" target="_blank" class="btn-secondary">LinkedIn</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-mono">© 2026 — yourhandle. built with GitHub Pages.</div>
+    <div class="footer-links">
+      <a href="https://github.com/yourusername" target="_blank">GitHub</a>
+      <a href="https://app.hackthebox.com/users/yourid" target="_blank">HackTheBox</a>
+      <a href="https://linkedin.com/in/yourprofile" target="_blank">LinkedIn</a>
+    </div>
+  </footer>
+
+</body>
+</html>
