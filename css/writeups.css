@@ -1,0 +1,342 @@
+/* ============================================================
+   writeups.css — CTF writeups index page
+   split layout: sticky terminal-style filter rail + card list
+   ============================================================ */
+
+/* page header */
+.wu-header {
+  padding: 56px 0 32px;
+  border-bottom: 1px solid var(--line);
+}
+.wu-header .crumb {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+  letter-spacing: 0.08em;
+  margin-bottom: 18px;
+}
+.wu-header .crumb a:hover { color: var(--accent); }
+.wu-header .crumb .sep { color: var(--line-strong); margin: 0 8px; }
+
+.wu-header h1 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0 0 14px;
+}
+.wu-header h1 .prompt {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 0.7em;
+  margin-right: 14px;
+  opacity: 0.85;
+}
+
+.wu-header .lede {
+  max-width: 640px;
+  color: var(--text-dim);
+  font-size: 16px;
+  margin: 0 0 24px;
+}
+
+.wu-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+}
+.wu-meta-row .stat b {
+  color: var(--text);
+  font-weight: 400;
+  margin-right: 6px;
+}
+.wu-meta-row .stat .accent { color: var(--accent); }
+
+/* split layout */
+.wu-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 48px;
+  padding: 40px 0 0;
+  align-items: start;
+}
+
+/* search bar — spans both grid columns above the rail + list */
+.wu-toolbar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+  font-family: var(--font-mono);
+  transition: border-color 140ms, box-shadow 140ms;
+}
+.wu-toolbar:focus-within {
+  border-color: var(--accent-dim);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.wu-search-prompt {
+  color: var(--accent);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  user-select: none;
+  flex-shrink: 0;
+}
+.wu-search-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text);
+  letter-spacing: 0.01em;
+  padding: 2px 0;
+  caret-color: var(--accent);
+}
+.wu-search-input::placeholder {
+  color: var(--text-faint);
+  opacity: 1;
+}
+.wu-search-hint {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+}
+.wu-search-hint kbd {
+  font-family: inherit;
+  font-size: 10px;
+  padding: 1px 5px;
+  margin: 0 2px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  background: var(--bg-elev-2);
+  color: var(--text-dim);
+}
+
+/* hide empty-state of toolbar when no matches */
+.wu-empty {
+  grid-column: 1 / -1;
+  padding: 32px 24px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-faint);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+}
+.wu-empty .accent { color: var(--accent); }
+
+/* sticky filter rail (terminal-styled) */
+.wu-rail {
+  position: sticky;
+  top: 80px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.wu-rail .group { margin-bottom: 26px; }
+.wu-rail .group h4 {
+  margin: 0 0 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: lowercase;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+}
+.wu-rail .group h4::before { content: "// "; color: var(--accent); opacity: 0.6; }
+
+.wu-rail ul { list-style: none; margin: 0; padding: 0; }
+.wu-rail li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+  cursor: pointer;
+  color: var(--text-dim);
+  transition: color 100ms;
+}
+.wu-rail li:hover { color: var(--text); }
+.wu-rail li .label { display: inline-flex; align-items: center; gap: 8px; }
+.wu-rail li .label::before {
+  content: "[ ]";
+  color: var(--text-faint);
+  letter-spacing: -1px;
+}
+.wu-rail li.on .label { color: var(--accent); }
+.wu-rail li.on .label::before { content: "[x]"; color: var(--accent); }
+.wu-rail li .count { color: var(--text-faint); font-size: 11px; }
+
+.wu-rail .rail-cmd {
+  margin-top: 32px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--text-faint);
+}
+.wu-rail .rail-cmd .prompt { color: var(--accent); }
+.wu-rail .rail-cmd .cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  background: var(--accent);
+  vertical-align: -2px;
+  margin-left: 2px;
+  animation: blink 1s steps(2, start) infinite;
+}
+
+/* card list */
+.wu-list { display: flex; flex-direction: column; gap: 18px; }
+
+.wu-list-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 4px 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--line);
+}
+.wu-list-head .count b { color: var(--accent); font-weight: 400; }
+.wu-list-head .sort { color: var(--text-dim); }
+.wu-list-head .sort .key { color: var(--accent); }
+
+/* writeup card */
+.wu-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: 20px;
+  align-items: start;
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+  transition: border-color 140ms, transform 140ms, background 140ms;
+  cursor: pointer;
+}
+.wu-card:hover {
+  border-color: var(--accent-dim);
+  background: var(--bg-elev-2);
+}
+.wu-card:hover .wu-arrow { color: var(--accent); transform: translateX(2px); }
+.wu-card:hover .wu-card-title { color: var(--accent); }
+
+.wu-card .idx {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+  padding-top: 2px;
+  line-height: 1.3;
+}
+.wu-card .idx .num { color: var(--text-dim); display: block; font-size: 13px; }
+.wu-card .idx .date { color: var(--text-faint); margin-top: 4px; display: block; font-size: 10px; }
+
+.wu-card-body { min-width: 0; }
+.wu-card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+  color: var(--text);
+  transition: color 140ms;
+}
+.wu-card-title .os {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-faint);
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+}
+.wu-card-desc {
+  margin: 0 0 12px;
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 64ch;
+}
+.wu-card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wu-arrow {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--text-faint);
+  align-self: center;
+  transition: color 140ms, transform 140ms;
+}
+
+/* draft / coming-soon variant */
+.wu-card.draft {
+  border-style: dashed;
+  background: transparent;
+  opacity: 0.7;
+}
+.wu-card.draft:hover { opacity: 0.95; }
+.wu-card.draft .wu-card-title { color: var(--text-dim); }
+
+/* difficulty bar (decorative accent on left edge of card) */
+.wu-card[data-diff="easy"]::before,
+.wu-card[data-diff="medium"]::before,
+.wu-card[data-diff="hard"]::before,
+.wu-card[data-diff="insane"]::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 14px; bottom: 14px;
+  width: 2px;
+  border-radius: 2px;
+}
+.wu-card[data-diff="easy"]::before   { background: var(--diff-easy); }
+.wu-card[data-diff="medium"]::before { background: var(--diff-medium); }
+.wu-card[data-diff="hard"]::before   { background: var(--diff-hard); }
+.wu-card[data-diff="insane"]::before { background: var(--diff-insane); }
+
+/* responsive */
+@media (max-width: 900px) {
+  .wu-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .wu-rail {
+    position: static;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    background: var(--bg-elev);
+  }
+}
+
+@media (max-width: 600px) {
+  .wu-card {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+  .wu-card .idx { display: flex; gap: 12px; }
+  .wu-card .idx .date { margin-top: 0; }
+  .wu-arrow { display: none; }
+  .wu-card-title { font-size: 19px; }
+}

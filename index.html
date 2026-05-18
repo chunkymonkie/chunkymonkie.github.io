@@ -1,151 +1,138 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>yourhandle — Cybersecurity Student</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/global.css" />
-    <link rel="stylesheet" href="css/home.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>andrxhh // cybersecurity student</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/home.css" />
 </head>
-<body>
+<body data-screen-label="01 Home">
 
-  <nav>
-    <a href="#hero" class="nav-logo">[andrxhh@kali]~$</a>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
+  <!-- nav -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-brand" href="index.html"><span>andrxhh<b>.</b>sh</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="active">home</a>
+        <a href="writeups.html">writeups</a>
+        <a href="#">certs &amp; awards</a>
+        <a href="#">projects</a>
+        <a href="#">contact</a>
+      </div>
+    </div>
   </nav>
 
-  <!-- Hero -->
-  <section id="hero">
-    <div class="scan-bg"></div>
-    <div class="hero-tag">student // cybersecurity</div>
-    <h1>Learning to <span>hack</span><br>one CTF at a time.</h1>
-    <p class="hero-sub">
-      I'm a cybersecurity student just getting started — documenting my CTF journey,
-      tools I'm exploring, and things I pick up along the way. Still early, but building in public.
-    </p>
-    <div class="hero-btns">
-      <a href="#projects" class="btn-primary">My CTF Writeups</a>
-      <a href="#about" class="btn-secondary">About Me</a>
-    </div>
-    <div class="status-row">
-      <div class="status-chip"><div class="dot"></div>Active on HackTheBox</div>
-      <div class="status-chip"><div class="dot amber"></div>Currently learning: web exploitation</div>
-    </div>
-  </section>
+  <!-- home / about -->
+  <main class="home">
+    <div class="container home-grid">
 
-  <!-- Projects -->
-  <section id="projects">
-    <div class="section-label">// projects &amp; writeups</div>
-    <div class="cards">
+      <!-- left: intro -->
+      <section class="intro">
+        <div class="crumb"><span class="accent">$</span> whoami</div>
 
-      <div class="card">
-        <div class="card-icon">&#128027;</div>
-        <div class="card-title">CTF Writeups</div>
-        <div class="card-desc">
-          Documented solutions for HackTheBox and PicoCTF challenges across web, crypto, and forensics categories.
-        </div>
-        <div class="card-tags">
-          <span class="tag">htb</span>
-          <span class="tag">picoctf</span>
-          <span class="tag">writeup</span>
-        </div>
-      </div>
+        <h1>
+          <span class="dim">hi, I'm</span><br/>
+          andrew<span class="accent">.</span>
+        </h1>
 
-      <div class="card">
-        <div class="card-icon">&#128274;</div>
-        <div class="card-title">Recon Toolkit</div>
-        <div class="card-desc">
-          Small Python script for passive recon and footprinting — built while learning OSINT techniques.
-        </div>
-        <div class="card-tags">
-          <span class="tag">python</span>
-          <span class="tag">osint</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-icon">&#128187;</div>
-        <div class="card-title">Homelab Setup</div>
-        <div class="card-desc">
-          Proxmox-based lab with intentionally vulnerable VMs (DVWA, VulnHub boxes) for hands-on practice.
-        </div>
-        <div class="card-tags">
-          <span class="tag">proxmox</span>
-          <span class="tag">linux</span>
-          <span class="tag">lab</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- About -->
-  <section id="about">
-    <div class="section-label">// whoami</div>
-    <div class="about-grid">
-
-      <div>
-        <p class="about-text">
-          A cybersecurity student with a growing interest in web application security and network pentesting.
-          I document everything I learn here — CTF solutions, lab experiments, and notes from courses.
-          The goal is to get better every day and leave a paper trail of progress.
+        <p class="role">
+          cybersecurity student
+          <span class="sep">/</span>
+          singapore
+          <span class="sep">/</span>
+          <span class="accent">always learning</span>
         </p>
-        <div class="skills">
-          <span class="skill">Kali Linux</span>
-          <span class="skill">Burp Suite</span>
-          <span class="skill">Wireshark</span>
-          <span class="skill">Nmap</span>
-          <span class="skill">Python</span>
-          <span class="skill">Metasploit</span>
-        </div>
-      </div>
 
-      <div class="terminal">
-        <div class="t-bar">
-          <div class="t-dot"></div>
-          <div class="t-dot"></div>
-          <div class="t-dot"></div>
+        <p class="bio">
+          I'm an undergrad figuring out offensive security one CTF at a
+          time. Most evenings I'm stuck on a hackthebox box, reading
+          a writeup, or trying to remember which flag <em>nmap</em>
+          actually needed. This site is where the writeups, notes,
+          and the occasional homelab project end up.
+        </p>
+
+        <div class="status-row">
+          <span class="pill pill-accent">
+            <span class="dot"></span>
+            active on hackthebox
+          </span>
+          <span class="pill">building toward: oscp</span>
         </div>
-        <div><span class="t-prompt">$ </span><span class="t-cmd">cat about.txt</span></div>
-        <div class="t-out">Name     : Your Name</div>
-        <div class="t-out">Role     : Cybersecurity Student</div>
-        <div class="t-out">Location : Singapore, SG</div>
-        <div class="t-out">Status   : <span class="t-available">learning</span></div>
-        <div class="t-out">HTB rank : Script Kiddie → Pro</div>
-        <div class="t-out">Goal     : break things safely</div>
-        <div><span class="t-prompt">$ </span><span class="t-cursor"></span></div>
-      </div>
+
+        <div class="socials">
+          <a class="social" href="https://github.com/andrxhh" target="_blank" rel="noopener" aria-label="github">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.6v-2.1c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2.9-.3 1.9-.4 2.9-.4s2 .1 2.9.4c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.5-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/>
+            </svg>
+            github
+            <span class="arrow">↗</span>
+          </a>
+
+          <a class="social" href="https://linkedin.com/in/andrxhh" target="_blank" rel="noopener" aria-label="linkedin">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.4 20.4h-3.5v-5.6c0-1.3 0-3-1.9-3s-2.1 1.4-2.1 2.9v5.7H9.4V9h3.4v1.6h.1c.5-.9 1.7-1.9 3.4-1.9 3.6 0 4.3 2.4 4.3 5.5v6.2zM5.3 7.4c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm1.8 13H3.6V9h3.5v11.4zM22.2 0H1.8C.8 0 0 .8 0 1.7v20.5C0 23.2.8 24 1.8 24h20.4c1 0 1.8-.8 1.8-1.7V1.7C24 .8 23.2 0 22.2 0z"/>
+            </svg>
+            linkedin
+            <span class="arrow">↗</span>
+          </a>
+
+          <a class="social" href="https://instagram.com/andrxhh" target="_blank" rel="noopener" aria-label="instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/>
+            </svg>
+            instagram
+            <span class="arrow">↗</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- right: terminal block -->
+      <aside class="term home-term" aria-label="about terminal">
+        <div class="term-head">
+          <span class="dot live"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="title">~/about &mdash; zsh</span>
+        </div>
+        <div class="term-body">
+          <span class="term-line"><span class="term-prompt">$</span> whoami</span>
+          <span class="term-line term-out">andrew</span>
+
+          <span class="term-line">&nbsp;</span>
+
+          <span class="term-line"><span class="term-prompt">$</span> cat ~/.about</span>
+          <span class="term-line out"><span class="kv">name</span><span class="v">andrew</span></span>
+          <span class="term-line out"><span class="kv">role</span><span class="v">Information Security student @ SIT</span></span>
+          <span class="term-line out"><span class="kv">location</span><span class="v">singapore <span class="comment"># gmt+8</span></span></span>
+          <span class="term-line out"><span class="kv">stack</span><span class="v">linux, python, bash, burp</span></span>
+          <span class="term-line out"><span class="kv">interests</span><span class="v">ctf, gym, games, netflix</span></span>
+
+          <span class="term-line">&nbsp;</span>
+
+          <span class="term-line"><span class="term-prompt">$</span> <span class="term-cursor"></span></span>
+        </div>
+      </aside>
 
     </div>
-  </section>
+  </main>
 
-  <!-- Contact -->
-  <section id="contact">
-    <div class="section-label">// get in touch</div>
-    <p style="font-size:15px; color:var(--muted); max-width:480px; margin-bottom:28px;">
-      Always happy to connect with other learners, swap CTF tips, or just talk security.
-      Find me on any of the platforms below.
-    </p>
-    <div style="display:flex; flex-wrap:wrap; gap:12px;">
-      <a href="https://github.com/yourusername" target="_blank" class="btn-secondary">GitHub</a>
-      <a href="https://app.hackthebox.com/users/yourid" target="_blank" class="btn-secondary">HackTheBox</a>
-      <a href="https://linkedin.com/in/yourprofile" target="_blank" class="btn-secondary">LinkedIn</a>
-    </div>
-  </section>
-
-  <footer>
-    <div class="footer-mono">© 2026 — yourhandle. built with GitHub Pages.</div>
-    <div class="footer-links">
-      <a href="https://github.com/yourusername" target="_blank">GitHub</a>
-      <a href="https://app.hackthebox.com/users/yourid" target="_blank">HackTheBox</a>
-      <a href="https://linkedin.com/in/yourprofile" target="_blank">LinkedIn</a>
+  <!-- footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 andrxhh &nbsp;//&nbsp; built with vim &amp; spite</span>
+      <span>
+        <a href="https://github.com/andrxhh" target="_blank" rel="noopener">github</a>
+        &nbsp;·&nbsp;
+        <a href="https://linkedin.com/in/andrxhh" target="_blank" rel="noopener">linkedin</a>
+        &nbsp;·&nbsp;
+        <a href="https://instagram.com/andrxhh" target="_blank" rel="noopener">instagram</a>
+      </span>
     </div>
   </footer>
 
