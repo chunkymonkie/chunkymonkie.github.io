@@ -164,6 +164,32 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
     font-size: 15px;
   }
   .nav a:last-child { border-bottom: none; }
+
+  /* tighter page padding */
+  .wrap { padding: 28px 18px 28px; }
+
+  /* writeup list rows — give the title most of the width, shrink date label */
+  .list a.row {
+    grid-template-columns: 64px 1fr auto;
+    gap: 10px;
+    padding: 12px 2px;
+    align-items: center;
+  }
+  .list .date { font-size: 12px; }
+  .list .name { font-size: 14px; line-height: 1.4; }
+  .list .name .arrow { margin-right: 4px; }
+  .list .tag { font-size: 11px; padding: 2px 6px; white-space: nowrap; }
+
+  /* card grid — single column on phones */
+  .grid { grid-template-columns: 1fr; }
+
+  /* trim large headings a touch */
+  h1 { font-size: 20px; }
+  h2 { font-size: 16px; margin-top: 28px; }
+  .section-title { font-size: 12px; }
+
+  /* footer stacks cleaner */
+  .footer { flex-direction: column; gap: 6px; }
 }
 
 /* ---------- headings ---------- */
