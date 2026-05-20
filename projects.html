@@ -72,9 +72,9 @@
 
     <h3 class="section-title" style="margin-top:18px;">how it works</h3>
     <ul style="color:var(--fg);padding-left:22px;margin:0 0 14px;">
-      <li>parses raw <code style="background:var(--bg);border:1px solid var(--border);padding:1px 6px;border-radius:4px;font-size:13px;">.eml</code> with <code style="background:var(--bg);border:1px solid var(--border);padding:1px 6px;border-radius:4px;font-size:13px;">email</code> from the stdlib</li>
-      <li>runs a stack of rules: sender mismatch, urgency words, suspicious links, attachment types</li>
-      <li>each rule contributes a weight + reason — final verdict shows the full reasoning</li>
+      <li>parses single raw <code style="background:var(--bg);border:1px solid var(--border);padding:1px 6px;border-radius:4px;font-size:13px;">.eml</code>, folders, and mbox archives</li>
+      <li>runs a stack of rules: sender mismatch, lookalike domains, keyword analysis, suspicious links, attachment types</li>
+      <li>each rule contributes a weight & reason — final verdict shows the full reasoning</li>
       <li>no ML, no cloud calls — auditable end-to-end</li>
     </ul>
 

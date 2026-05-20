@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>andrxhh — Spookifier writeup</title>
+<link rel="stylesheet" href="../styles.css" />
+<script src="../nav.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* writeup-only: readable body font for prose, mono kept for code + headers + chrome */
+  .prose p,
+  .prose ul li,
+  .prose blockquote {
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, Segoe UI, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    letter-spacing: 0.005em;
+  }
+  .prose p.dim em,
+  .prose blockquote { font-style: normal; }
+  .prose ul li strong,
+  .prose p strong { font-weight: 600; }
+  /* code and inline-code stay monospace */
+  .prose code,
+  .prose pre,
+  .prose pre * { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  /* step markers — make them pop while scrolling */
+  .prose h2.step {
+    margin-top: 56px;
+    padding-top: 22px;
+    border-top: 1px dashed var(--border);
+    font-size: 20px;
+    color: var(--fg);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .prose h2.step::before {
+    content: attr(data-step);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 28px;
+    padding: 0 10px;
+    background: rgba(63, 185, 80, 0.12);
+    border: 1px solid var(--green);
+    border-radius: 4px;
+    color: var(--green);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  /* writeup-only: screenshot styling */
+  .prose figure {
+    margin: 18px 0 22px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #0a1815;
+  }
+  .prose figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: zoom-in;
+    transition: opacity .15s ease;
+  }
+  .prose figure img:hover { opacity: 0.85; }
+
+  /* lightbox */
+  .lightbox {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    z-index: 100;
+    cursor: zoom-out;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 18px; right: 22px;
+    background: none;
+    border: none;
+    color: var(--fg-dim);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  .lightbox-close:hover { color: var(--green); }
+  .prose figcaption {
+    padding: 10px 14px;
+    color: var(--fg-dim);
+    font-size: 12.5px;
+    border-top: 1px dashed var(--border);
+    background: rgba(255,255,255,0.015);
+  }
+  .prose figcaption::before {
+    content: "// ";
+    color: var(--fg-muted);
+  }
+</style>
+</head>
+<body data-screen-label="03d Writeup detail">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="../index.html"><span class="prompt">$</span> andrxhh<span class="cursor"></span></a>
+    <nav class="nav">
+      <a href="../index.html">home</a>
+      <a href="../about.html">about</a>
+      <a class="active" href="../writeups.html">writeups</a>
+      <a href="../certs.html">certs</a>
+      <a href="../projects.html">projects</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap prose">
+  <a href="../writeup-platforms/writeups-htb.html" class="back-link">← HackTheBox writeups</a>
+  <p class="prompt-line"><span class="p">$</span> cat spookifier.md</p>
+  <h1>Spookifier</h1>
+  <div class="meta-bar">
+    <span>HackTheBox</span>
+    <span>web</span>
+    <span>easy</span>
+    <span>2026-05-21</span>
+  </div>
+
+  <p class="dim">
+    "There's a new trend of an application that generates a spooky name for you.
+    Users of that application later discovered that their real names were also
+    magically changed, causing havoc in their life. Could you help bring down
+    this application?"
+  </p>
+   <p class="dim">
+    Downloadable: <code>a12c739d-6cb7-422d-9ff5-a88b420ad854.zip</code>
+  </p>
+
+  <p>
+    <strong>Vulnerability chain:</strong> Source Code Disclosure → Mako Template Engine → Server-Side Template Injection (SSTI) → RCE
+  </p>
+
+ 
+
+  <h2 class="step" data-step="01">reconnaissance</h2>
+  <p>
+    The challenge spins up a Halloween-themed "Name Spookifier" — a single
+    input field, a <strong>Spookify</strong> button, and a downloadable source
+    zip. Looks innocent enough.
+  </p>
+
+  <figure>
+    <img src="assets/spookifier/1.jpg" alt="Name Spookifier landing page with a single input field and Spookify button" />
+    <figcaption>name spookifier landing page — the public surface.</figcaption>
+  </figure>
+
+  <p>
+    Let's test the input field by entering something normal for a start. We
+    see that our inputs get displayed onto the page.
+  </p>
+
+  <figure>
+    <img src="assets/spookifier/2.jpg" alt="Input field with the word 'hello' typed in before submission" />
+    <figcaption>typing in a baseline input — <code>hello</code>.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="assets/spookifier/3.jpg" alt="Output table showing multiple spookified variations of the word 'hello'" />
+    <figcaption>the server reflects our input back as several glyph-substituted variants.</figcaption>
+  </figure>
+
+  <p>
+    The downloadable <code>.zip</code> file contains the source code! This
+    gives us more information about the logic flow behind the scenes — let's
+    investigate.
+  </p>
+
+  <p>In <code>main.py</code>, I see something unfamiliar — <strong>Mako Templates</strong>?</p>
+
+  <figure>
+    <img src="assets/spookifier/5.jpg" alt="main.py source code showing Flask app initialised with MakoTemplates(app)" />
+    <figcaption><code>main.py</code> — Flask app wrapped with <code>MakoTemplates(app)</code>.</figcaption>
+  </figure>
+
+  <p>
+    A quick google search brings us to this page, so we now know that Mako is
+    a template library written in Python, just like Jinja2.
+  </p>
+
+  <figure>
+    <img src="assets/spookifier/6.jpg" alt="Mako templates official homepage describing it as a hyperfast Python template library" />
+    <figcaption>mako — a hyperfast template library for python.</figcaption>
+  </figure>
+
+  <h2 class="step" data-step="02">source code review</h2>
+  <p>
+    Jumping back into the source code, we see that <code>routes.py</code>
+    shows us what happens with our input. There is <strong>NO</strong> input
+    sanitization.
+  </p>
+
+  <p>
+    Unsanitary input stored inside <code>converted</code>, which is then
+    stored inside <code>output</code> and rendered into <code>index.html</code>.
+  </p>
+
+  <figure>
+    <img src="assets/spookifier/7.jpg" alt="routes.py source code showing user-supplied text passed directly into render_template" />
+    <figcaption><code>routes.py</code> — user input flows straight into <code>render_template</code>.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="assets/spookifier/8.jpg" alt="index.html template showing ${output} interpolation inside a table body" />
+    <figcaption><code>index.html</code> — <code>${output}</code> is rendered server-side by Mako.</figcaption>
+  </figure>
+
+  <h2 class="step" data-step="03">exploitation</h2>
+  <p>
+    How can I exploit this vulnerability? Lets take a look at
+    <a href="https://github.com/swisskyrepo/PayloadsAllTheThings" target="_blank" rel="noopener">PayloadsAllTheThings</a>,
+    and navigate our way to the Server Side Template Injection cheatsheets.
+  </p>
+
+  <figure>
+    <img src="assets/spookifier/9.jpg" alt="GitHub search inside PayloadsAllTheThings repo filtering for python SSTI" />
+    <figcaption>searching PayloadsAllTheThings for SSTI python references.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="assets/spookifier/10.jpg" alt="PayloadsAllTheThings Mako section showing universal payloads and Mako remote command execution examples" />
+    <figcaption>mako RCE payloads — direct access to the <code>os</code> module via <code>self.module.cache.util.os</code>.</figcaption>
+  </figure>
+
+  <p>
+    To get the flag, based off the Dockerfile, we can tell that the web root
+    is <code>/app</code>. Since the flag is at <code>/flag.txt</code>, we
+    need to set the relative path to it in the payload.
+  </p>
+
+  <figure>
+    <img src="assets/spookifier/4.jpg" alt="Dockerfile showing WORKDIR /app and COPY flag.txt /flag.txt — flag is one directory above the web root" />
+    <figcaption>dockerfile — <code>flag.txt</code> sits one level above <code>WORKDIR /app</code>.</figcaption>
+  </figure>
+
+  <p>
+    Of course, we might not get it on the first payload. After a few
+    trial-and-error, we got a payload to work!
+  </p>
+
+  <pre>${self.module.cache.util.os.popen('cat ../flag.txt').read()}</pre>
+
+  <p>
+    Submitting the payload through the Spookify input field triggers Mako to
+    evaluate the expression server-side — <code>os.popen</code> runs
+    <code>cat ../flag.txt</code> and the contents are reflected straight back
+    into the response.
+  </p>
+
+  <figure>
+    <img src="assets/spookifier/11.jpg" alt="Spookifier output showing the flag HTB{t3mp14t3_1nj3ct10n_C4n_3x1st5_4nywh343!!} rendered alongside the spookified variants" />
+    <figcaption>the flag is rendered alongside the spookified output rows.</figcaption>
+  </figure>
+
+  <h2>vulnerability chain</h2>
+  <ul>
+    <li><strong>1. Source code disclosure</strong> — downloadable zip leaked the full Flask app.</li>
+    <li><strong>2. Template engine identification</strong> — <code>main.py</code> revealed Mako via <code>MakoTemplates(app)</code>.</li>
+    <li><strong>3. SSTI</strong> — <code>routes.py</code> passed unsanitized input straight into <code>render_template</code>.</li>
+    <li><strong>4. RCE</strong> — Mako exposes the entire Python <code>os</code> module via <code>self.module.cache.util.os</code>.</li>
+  </ul>
+
+  <h2>flag</h2>
+  <pre>HTB{t3mp14t3_1nj3ct10n_C4n_3x1st5_4nywh343!!}</pre>
+
+  <div class="footer">
+    <a href="../writeup-platforms/writeups-htb.html" style="color:var(--fg-muted);">← more HackTheBox writeups</a>
+    <span>// happy hacking</span>
+  </div>
+</main>
+
+<!-- lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="image viewer">
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="close">[ esc ]</button>
+  <img id="lightboxImg" src="" alt="" />
+</div>
+
+<script>
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbClose = document.getElementById('lightboxClose');
+  document.querySelectorAll('.prose figure img').forEach(img => {
+    img.addEventListener('click', () => {
+      lbImg.src = img.src;
+      lbImg.alt = img.alt;
+      lb.classList.add('open');
+    });
+  });
+  const closeLb = () => { lb.classList.remove('open'); lbImg.src = ''; };
+  lbClose.addEventListener('click', closeLb);
+  lb.addEventListener('click', (e) => { if (e.target === lb) closeLb(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLb(); });
+</script>
+
+</body>
+</html>

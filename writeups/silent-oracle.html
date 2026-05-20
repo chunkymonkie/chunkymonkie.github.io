@@ -159,7 +159,7 @@
   </p>
 
   <figure>
-    <img src="assets/01-shadow-directory.jpg" alt="Shadow Directory landing page with a GraphQL query editor and Run Query button" />
+    <img src="assets/silent-oracle/01-shadow-directory.jpg" alt="Shadow Directory landing page with a GraphQL query editor and Run Query button" />
     <figcaption>shadow directory landing page — the only public surface.</figcaption>
   </figure>
 
@@ -176,12 +176,12 @@
   </p>
 
   <figure>
-    <img src="assets/02-burp-request-schema.jpg" alt="Burp Suite request panel showing POST /graphql with a __schema introspection query" />
+    <img src="assets/silent-oracle/02-burp-request-schema.jpg" alt="Burp Suite request panel showing POST /graphql with a __schema introspection query" />
     <figcaption>burp request — full <code>__schema</code> introspection POST.</figcaption>
   </figure>
 
   <figure>
-    <img src="assets/03-burp-response-schema.jpg" alt="Burp Suite response showing all GraphQL types including User, ID, String, Query" />
+    <img src="assets/silent-oracle/03-burp-response-schema.jpg" alt="Burp Suite response showing all GraphQL types including User, ID, String, Query" />
     <figcaption>response — every type the server knows about, including the <code>User</code> type.</figcaption>
   </figure>
 
@@ -195,7 +195,7 @@
     -d '{"query":"{ __type(name: \"Query\") { fields { name } } }"}'</pre>
 
   <figure>
-    <img src="assets/04-query-fields.jpg" alt="Terminal showing curl response listing two query fields: about and users" />
+    <img src="assets/silent-oracle/04-query-fields.jpg" alt="Terminal showing curl response listing two query fields: about and users" />
     <figcaption>two root query fields: <code>about</code> and <code>users</code>.</figcaption>
   </figure>
 
@@ -206,7 +206,7 @@
     -d '{"query":"{ __type(name: \"User\") { fields { name } } }"}'</pre>
 
   <figure>
-    <img src="assets/05-user-fields.jpg" alt="Terminal showing the User type exposes id, username, displayName, role, bio" />
+    <img src="assets/silent-oracle/05-user-fields.jpg" alt="Terminal showing the User type exposes id, username, displayName, role, bio" />
     <figcaption>User type exposes: <code>id</code>, <code>username</code>, <code>displayName</code>, <code>role</code>, <code>bio</code>.</figcaption>
   </figure>
 
@@ -233,7 +233,7 @@ EOF
     -d @/tmp/query.json</pre>
 
   <figure>
-    <img src="assets/06-union-column-mapping.jpg" alt="Terminal showing UNION SELECT 1,2,3,4,5 response with column-to-field mapping" />
+    <img src="assets/silent-oracle/06-union-column-mapping.jpg" alt="Terminal showing UNION SELECT 1,2,3,4,5 response with column-to-field mapping" />
     <figcaption>injected sentinel values land in the response — column mapping confirmed.</figcaption>
   </figure>
 
@@ -271,7 +271,7 @@ EOF
     -d @/tmp/query.json</pre>
 
   <figure>
-    <img src="assets/07-sqlite-master-dump.jpg" alt="Terminal showing the CREATE TABLE users statement leaked via UNION SELECT sql FROM sqlite_master, exposing a hidden secret column" />
+    <img src="assets/silent-oracle/07-sqlite-master-dump.jpg" alt="Terminal showing the CREATE TABLE users statement leaked via UNION SELECT sql FROM sqlite_master, exposing a hidden secret column" />
     <figcaption>the <code>CREATE TABLE</code> statement leaks the hidden <code>secret TEXT NOT NULL</code> column.</figcaption>
   </figure>
 
@@ -294,7 +294,7 @@ EOF
   <p>The <code>admin</code> user's <code>secret</code> field contained the flag.</p>
 
   <figure>
-    <img src="assets/08-flag-extraction.jpg" alt="Terminal showing UNION SELECT secret FROM users dumping every user's secret column, with the admin's flag visible" />
+    <img src="assets/silent-oracle/08-flag-extraction.jpg" alt="Terminal showing UNION SELECT secret FROM users dumping every user's secret column, with the admin's flag visible" />
     <figcaption>every <code>secret</code> value dumped and shows in the <code>username</code>column value, there's the flag!</figcaption>
   </figure>
 
