@@ -6,6 +6,48 @@
 <title>andrxhh — certs &amp; awards</title>
 <link rel="stylesheet" href="styles.css" />
 <script src="nav.js" defer></script>
+<style>
+  /* let the thumb hold a real image cleanly */
+  .cert-thumb {
+    background: #0e1816;
+    overflow: hidden;
+    position: relative;
+  }
+  .cert-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  /* modal: replace placeholder striped box with a real image area */
+  .modal-img {
+    background: #0e1816;
+    aspect-ratio: auto;
+    padding: 0;
+    border: 1px solid var(--border);
+    max-height: 75vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-img img {
+    width: 100%;
+    height: auto;
+    max-height: 75vh;
+    object-fit: contain;
+    display: block;
+  }
+  .modal-img.empty {
+    aspect-ratio: 4 / 3;
+    background:
+      repeating-linear-gradient(45deg, #16302a 0 14px, #11201c 14px 28px);
+    color: var(--fg-muted);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+  }
+</style>
 </head>
 <body data-screen-label="04 Certs">
 
@@ -38,12 +80,25 @@
       <div class="cert-issuer">Offensive Security</div>
       <div class="cert-date">in progress · 2026</div>
     </button>
+    <button type="button" class="cert-card"
+      data-name="CHFI"
+      data-issuer="EC-Council"
+      data-date="issued 22 Sep 2022 · expired 21 Sep 2025"
+      data-desc="Computer Hacking Forensic Investigator — EC-Council certification covering forensic investigation, evidence handling, and incident response."
+      data-img="uploads/certs/andrew_CHFI.jpg">
+      <div class="cert-thumb"><img src="uploads/certs/andrew_CHFI.jpg" alt="CHFI certificate"></div>
+      <div class="cert-name">CHFI</div>
+      <div class="cert-issuer">EC-Council</div>
+      <div class="cert-date">issued sep 2022</div>
+    </button>
+
+
   </div>
 
 
   <div class="footer">
     <a href="index.html" style="color:var(--fg-muted);">← back to home</a>
-    <span>// 1 entry</span>
+    <span>// 2 entries</span>
   </div>
 </main>
 
@@ -51,7 +106,7 @@
 <div class="modal-back" id="modal" role="dialog" aria-modal="true">
   <div class="modal">
     <button type="button" class="modal-close" id="modalClose" aria-label="close">[ esc ]</button>
-    <div class="modal-img" id="modalImg">[ CERT IMAGE — drop file here ]</div>
+    <div class="modal-img empty" id="modalImg">[ CERT IMAGE — drop file here ]</div>
     <h3 id="modalName">—</h3>
     <p class="meta" id="modalIssuer">—</p>
     <p class="dim" id="modalDate" style="font-size:12px;margin-top:4px;">—</p>
@@ -62,12 +117,21 @@
 <script>
   const modal = document.getElementById('modal');
   const close = document.getElementById('modalClose');
+  const modalImg = document.getElementById('modalImg');
   document.querySelectorAll('.cert-card').forEach(btn => {
     btn.addEventListener('click', () => {
       document.getElementById('modalName').textContent = btn.dataset.name;
       document.getElementById('modalIssuer').textContent = btn.dataset.issuer;
       document.getElementById('modalDate').textContent = btn.dataset.date;
       document.getElementById('modalDesc').textContent = btn.dataset.desc;
+      const src = btn.dataset.img;
+      if (src) {
+        modalImg.classList.remove('empty');
+        modalImg.innerHTML = '<img src="' + src + '" alt="' + btn.dataset.name + ' certificate">';
+      } else {
+        modalImg.classList.add('empty');
+        modalImg.innerHTML = '[ CERT IMAGE — drop file here ]';
+      }
       modal.classList.add('open');
     });
   });
